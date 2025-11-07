@@ -191,9 +191,6 @@ public class Scanner
     
     private void addToken(TokenType type, Object literal)
     {
-        Console.WriteLine(_start);
-        Console.WriteLine(_current);
-        Console.WriteLine(_source);
         var text = _source.Substring(_start, _current - _start);
         _tokens.Add(new Token(type, text, literal, _line));
     }

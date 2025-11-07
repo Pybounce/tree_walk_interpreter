@@ -9,6 +9,7 @@ class Lox
 
     static void Main(string[] args)
     {
+
         if (args.Length == 1)
         {
             RunFile(args[0]);
@@ -24,33 +25,48 @@ class Lox
     static void RunFile(string path)
     {
         var source = System.IO.File.ReadAllText(path);
-        run(source);
+        Run(source);
         if (_hadError) { Environment.Exit(0); }
     }
 
-    static void run(string source)
+    static void Run(string source)
     {
         if (source == null) { throw new NullReferenceException("source code cannot be null"); }
         var scanner = new Scanner(source);
         var tokens = scanner.ScanTokens();
 
-        foreach (Token token in tokens)
-        {
-            Console.WriteLine(token.ToString());
-        }
+        var parser = new Parser(tokens);
+        var expression = parser.Parse();
+
+        if (_hadError || expression == null) { return; }
+
+        Console.WriteLine(new AstPrinter().Print(expression));
     }
 
     public static void Error(int line, string message)
     {
-        report(line, "", message);
+        Report(line, "", message);
+    }
+
+    public static void Error(Token token, string message)
+    {
+        if (token.TokenType == TokenType.EOF)
+        {
+            Report(token.Line, " at end", message);
+        }
+        else
+        {
+            Report(token.Line, $"at '{token.Lexeme}'", message);
+        }
     }
     
-    private static void report(int line, string where, string message)
+    private static void Report(int line, string where, string message)
     {
         Console.WriteLine($"Line {line}, Error {where}: {message}");
         _hadError = true;
     }
 }
+
 
 
 
