@@ -1,7 +1,5 @@
 ﻿
 
-using System.Net;
-
 class Lox
 {
 
@@ -29,6 +27,7 @@ class Lox
             if (input == null) { break; }
             Run(input);
             Console.WriteLine();
+            _hadError = false;
         }
 
     }
