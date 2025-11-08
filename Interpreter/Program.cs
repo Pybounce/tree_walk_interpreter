@@ -6,27 +6,39 @@ class Lox
 {
 
     private static bool _hadError = false;
+    private static bool _hadRuntimeError = false;
+    private static Interpreter _interpreter = new Interpreter();
 
     static void Main(string[] args)
     {
 
-        if (args.Length == 1)
-        {
-            RunFile(args[0]);
-        }
+        if (args.Length == 1) { RunFile(args[0]); }
+        else if (args.Length == 0) { RunPrompt(); }
         else
         {
-            throw new ArgumentException("Must have exactly one argument");
+            throw new ArgumentException("Must have less than 2 arguments");
         }
     }
 
+    static void RunPrompt()
+    {
+        while (true)
+        {
+            Console.Write(">");
+            var input = Console.ReadLine();
+            if (input == null) { break; }
+            Run(input);
+            Console.WriteLine();
+        }
 
+    }
 
     static void RunFile(string path)
     {
         var source = System.IO.File.ReadAllText(path);
         Run(source);
-        if (_hadError) { Environment.Exit(0); }
+        if (_hadError) { Environment.Exit(65); }
+        if (_hadRuntimeError) { Environment.Exit(70); }
     }
 
     static void Run(string source)
@@ -40,7 +52,13 @@ class Lox
 
         if (_hadError || expression == null) { return; }
 
-        Console.WriteLine(new AstPrinter().Print(expression));
+        _interpreter.Interpret(expression);
+    }
+
+    public static void RuntimeError(RuntimeError error)
+    {
+        Console.Error.WriteLine($"{error.Message}\n[line {error.Token.Line}]");
+        _hadRuntimeError = true;
     }
 
     public static void Error(int line, string message)
@@ -59,7 +77,7 @@ class Lox
             Report(token.Line, $"at '{token.Lexeme}'", message);
         }
     }
-    
+
     private static void Report(int line, string where, string message)
     {
         Console.WriteLine($"Line {line}, Error {where}: {message}");
