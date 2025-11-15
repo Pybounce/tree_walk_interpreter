@@ -30,7 +30,8 @@ class ASTGenerator
             "Block : List<Stmt> statements",
             "If : Expr Condition, Stmt ThenBranch, Stmt? ElseBranch",
             "While : Expr Condition, Stmt Body",
-            "Function : Token Name, List<Token> Params, List<Stmt> Body"
+            "Function : Token Name, List<Token> Params, List<Stmt> Body",
+            "Return : Token Keyword, Expr expression"
         });
 
     }

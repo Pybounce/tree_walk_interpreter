@@ -1,14 +1,9 @@
-
-var start = clock();
-
-fun printRange(start, end) {
-  for (var a = start; a < end; a = a + 1) {
-    print a;
-  }
+fun sqr(x) {
+    return x * x;
 }
 
-printRange(0, 2000000);
+print sqr(1);
+print sqr(2);
+print sqr(3);
 
-var end = clock();
 
-print (end - start);

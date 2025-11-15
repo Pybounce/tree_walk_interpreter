@@ -1,6 +1,4 @@
 
-using System.Security.Cryptography.X509Certificates;
-
 public readonly struct Nothing { }
 
 public class Interpreter : Expr.Visitor<Object>, Stmt.Visitor<Nothing>
@@ -265,8 +263,16 @@ public class Interpreter : Expr.Visitor<Object>, Stmt.Visitor<Nothing>
 
     public Nothing VisitFunctionStmt(Stmt.Function stmt)
     {
-        var function = new LoxFunction(stmt);
+        var function = new LoxFunction(stmt, _environment);
         _environment.Define(stmt.Name.Lexeme, function);
         return new Nothing();
+    }
+
+    public Nothing VisitReturnStmt(Stmt.Return stmt)
+    {
+        object val = null;
+        if (stmt.expression != null) { val = Evaluate(stmt.expression); }
+
+        throw new Return(val);
     }
 }

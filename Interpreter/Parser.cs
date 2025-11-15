@@ -98,9 +98,27 @@ public class Parser
         if (MatchAny(TokenType.FOR)) { return ForStatement(); }
         if (MatchAny(TokenType.IF)) { return IfStatement(); }
         if (MatchAny(TokenType.PRINT)) { return PrintStatement(); }
+        if (MatchAny(TokenType.RETURN)) { return ReturnStatement(); }
         if (MatchAny(TokenType.WHILE)) { return WhileStatement(); }
         if (MatchAny(TokenType.LEFT_BRACE)) { return new Stmt.Block(Block()); }
         return ExpressionStatement();
+    }
+
+    private Stmt ReturnStatement()
+    {
+        var token = Previous();
+        Expr expression;
+        if (Check(TokenType.SEMICOLON))
+        {
+            expression = null;
+        }
+        else
+        {
+            expression = Expression();
+        }
+        Consume(TokenType.SEMICOLON, "Expect ';' after return statement.");
+
+        return new Stmt.Return(token, expression);
     }
 
     private Stmt ForStatement()
