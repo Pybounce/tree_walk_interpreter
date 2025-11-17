@@ -59,7 +59,7 @@ class Lox
         try
         {
             var example_name = args[1];
-            var path = Path.Combine(GetExamplesDirectory(), $"{example_name.ToLower()}.dat");
+            var path = Path.Combine(GetExamplesDirectory(), $"{example_name.ToLower()}.lox");
             RunFile(path);
         }
         catch(Exception e)
